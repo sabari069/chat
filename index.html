@@ -248,6 +248,26 @@
             transform: translate(-4px, -4px);
             box-shadow: 4px 4px 0 #ffffff;
         }
+
+        @media (max-width: 480px) {
+            #chat-container {
+                width: calc(100vw - 28px);
+                height: calc(100vh - 28px);
+                top: 8px;
+                left: 8px;
+                border-width: 5px;
+                outline-width: 8px;
+            }
+
+            #message-input,
+            #send-button {
+                font-size: 12px;
+            }
+
+            #messages p {
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <!-- <img src="https://upload.wikimedia.org/wikipedia/commons/0/0f/Grosser_Panda.JPG" alt="Panda"> -->
@@ -304,23 +324,23 @@
                 namePopup.style.display = 'none'; // Close the popup
                 document.getElementById('chat-container').style.display = 'block'; // Show chat container
                 Toastify({
-            text: "Welcome, " + username + "!",
-            duration: 3000,
-            gravity: "top", // "top" or "bottom"
-            position: "right", // "left", "center", "right"
-            backgroundColor: "#28a745", // Green background for success
-            stopOnFocus: true, // Prevent dismissal on hover
-        }).showToast();
+                    text: "Welcome, " + username + "!",
+                    duration: 3000,
+                    gravity: "top", // "top" or "bottom"
+                    position: "right", // "left", "center", "right"
+                    backgroundColor: "#28a745", // Green background for success
+                    stopOnFocus: true, // Prevent dismissal on hover
+                }).showToast();
             } else {
                 // alert('Please enter a valid username!');
                 Toastify({
-            text: "Please enter a valid username!",
-            duration: 3000,
-            gravity: "top",
-            position: "right",
-            backgroundColor: "#dc3545", // Red background for error
-            stopOnFocus: true,
-        }).showToast();
+                    text: "Please enter a valid username!",
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "#dc3545", // Red background for error
+                    stopOnFocus: true,
+                }).showToast();
             }
         });
 
@@ -371,13 +391,13 @@
             messagesDiv.scrollTop = messagesDiv.scrollHeight; // Auto-scroll to the latest message
 
             Toastify({
-        text: `New message from ${data.sender}`,
-        duration: 3000,
-        gravity: "bottom",
-        position: "right",
-        backgroundColor: "#17a2b8", // Blue background for new message
-        stopOnFocus: true,
-    }).showToast();
+                text: `New message from ${data.sender}`,
+                duration: 3000,
+                gravity: "bottom",
+                position: "right",
+                backgroundColor: "#17a2b8", // Blue background for new message
+                stopOnFocus: true,
+            }).showToast();
         });
 
         // Send a message
