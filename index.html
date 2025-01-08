@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Croissant+One&family=Ephesis&display=swap" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            font-weight: 100;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #2b2d42;
+            background-size: cover;
+            /* background-image: url("./snapedit_1735196948943.jpeg"); */
+            background-position: center;
+            background-repeat: no-repeat;
+            image-rendering: crisp-edges;
+            color: #edf2f4;
+        }
+
+        .background {
+            position: absolute;
+            z-index: -1;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        .background img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        #chat-container {
+            position: absolute;
+            left: 8%;
+            top: 6%;
+            width: 38vw;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            border: 16px solid #ffffff;
+            outline: 20px solid #000000;
+            box-shadow: 0 5px 15px #0000008c;
+        }
+
+        /* Rest of your styling remains the same */
+        #messages {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            height: calc(100% - 76px);
+            overflow: auto;
+            background-image: url('./images/cute-tom-and-jerry-jytlznyozd9r8v27.jpg');
+            /* background-image: url('https://4kwallpapers.com/images/wallpapers/tom-jerry-4480x2520-12162.jpg'); */
+            image-rendering: crisp-edges;
+            background-size: cover;
+            background-position: center;
+        }
+
+        #messages p {
+            font-family: "Croissant One", serif;
+            padding: 10px;
+            margin: 0;
+            max-width: 75%;
+            word-wrap: break-word;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        #messages .sent {
+            align-self: flex-end;
+            background-color: #d814d8a2;
+            backdrop-filter: blur(2px);
+            outline: 3px solid #000000;
+            color: white;
+            position: relative;
+        }
+
+        #messages .sent::after {
+            content: "";
+            position: absolute;
+            height: 10px;
+            width: 10px;
+            rotate: 45deg;
+            background-color: #d814d8;
+            right: -5px;
+            bottom: 2px;
+        }
+
+        #messages .received {
+            align-self: flex-start;
+            background-color: #ffffffd2;
+            backdrop-filter: blur(2px);
+            outline: 3px solid #000000;
+            color: #000000;
+            position: relative;
+        }
+
+        #messages .received::after {
+            content: "";
+            position: absolute;
+            height: 10px;
+            width: 10px;
+            rotate: 45deg;
+            background-color: #ffffff;
+            left: -5px;
+            bottom: 2px;
+        }
+
+        #message-form {
+            display: flex;
+            padding: 10px;
+            background-color: #131313;
+            gap: 8px;
+            /* border-top: 1px solid #8d99ae; */
+        }
+
+        #message-input {
+            flex: 1;
+            padding: 6px;
+            border: 1px solid #8d99ae;
+            background-color: #edf2f4;
+            color: #000000;
+            outline: none;
+        }
+
+        #message-input:focus {
+            border: 1px solid #ffffff;
+        }
+
+        #send-button {
+            padding: 6px 20px;
+            border: none;
+            background-color: #ff00c8;
+            color: rgb(250, 211, 250);
+            cursor: pointer;
+            transition: background-color 0.3s;
+            transition: all .2s;
+        }
+
+        #send-button:hover {
+            background-color: #d814d8;
+            box-shadow: 4px 4px 0 #ffffff;
+            transform: translate(-2px, -2px);
+        }
+
+        #emoji-button {
+            background-color: #ffffff;
+            border: none;
+            padding: 6px;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+            margin-right: 10px;
+        }
+
+        #emoji-button:hover {
+            background-color: #dfdfdf;
+        }
+
+        .emoji-list {
+            position: absolute;
+            bottom: 168px;
+            left: 36%;
+            transform: translateX(-50%);
+            background-color: #2b2d42;
+            padding: 10px;
+            border-radius: 8px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .emoji {
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .emoji:hover {
+            transform: scale(1.2);
+        }
+
+        /* Popup styles */
+        #name-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(8px);
+        }
+
+        #name-popup .popup-content {
+            font-family: "Ephesis", serif;
+            background-color: #141414;
+            padding: 20px;
+            border: 10px solid #ffffff;
+            /* border-radius: 10px; */
+            text-align: center;
+            width: fit-content;
+        }
+
+        #name-popup input {
+            padding: 8px 14px;
+            margin: 1px;
+            width: calc(100% - 40px);
+            outline: none;
+            border: 1px solid #434343;
+            margin-bottom: 30px;
+        }
+
+        #name-popup input:focus {
+            border: 1px solid #237bff;
+        }
+
+        #name-popup button {
+            padding: 10px 20px;
+            outline: none;
+            border: 1px solid #ffffff;
+            background-color: #323232;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        #name-popup button:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 4px 4px 0 #ffffff;
+        }
+    </style>
+</head>
+<!-- <img src="https://upload.wikimedia.org/wikipedia/commons/0/0f/Grosser_Panda.JPG" alt="Panda"> -->
+
+<body>
+    <!-- Name Popup -->
+    <div class="background">
+        <img src="./images/snapedit_1735199028534.jpeg" alt="" height="100%" width="100%">
+    </div>
+    <div id="name-popup">
+        <div class="popup-content">
+            <h2>Enter your name</h2>
+            <input type="text" id="username-input" placeholder="Your name" autofocus />
+            <button id="set-username-button">Set Name</button>
+        </div>
+    </div>
+
+    <div id="chat-container" style="display:none;">
+        <div id="messages"></div>
+        <form id="message-form">
+            <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off" autofocus />
+            <button type="button" id="emoji-button">😊</button>
+            <button type="submit" id="send-button">Send</button>
+        </form>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+        const socket = io('http://192.168.0.110:3000'); // Replace with your backend URL
+
+        const messagesDiv = document.getElementById('messages');
+        const messageForm = document.getElementById('message-form');
+        const messageInput = document.getElementById('message-input');
+        const emojiButton = document.getElementById('emoji-button');
+        const namePopup = document.getElementById('name-popup');
+        const setUsernameButton = document.getElementById('set-username-button');
+        const usernameInput = document.getElementById('username-input');
+
+        let currentSocketId = null;
+        let username = null; // To store the user's name
+
+        // Sample emoji list
+        const emojis = ["😊", "😂", "😍", "😎", "😢", "😜", "😡", "❤️"];
+
+        // Open popup to set username
+        namePopup.style.display = 'flex';
+
+        // Handle username submission
+        setUsernameButton.addEventListener('click', () => {
+            username = usernameInput.value.trim().toUpperCase();;
+            if (username) {
+                // Emit the username to the server
+                socket.emit('setUsername', username);
+                namePopup.style.display = 'none'; // Close the popup
+                document.getElementById('chat-container').style.display = 'block'; // Show chat container
+                Toastify({
+            text: "Welcome, " + username + "!",
+            duration: 3000,
+            gravity: "top", // "top" or "bottom"
+            position: "right", // "left", "center", "right"
+            backgroundColor: "#28a745", // Green background for success
+            stopOnFocus: true, // Prevent dismissal on hover
+        }).showToast();
+            } else {
+                // alert('Please enter a valid username!');
+                Toastify({
+            text: "Please enter a valid username!",
+            duration: 3000,
+            gravity: "top",
+            position: "right",
+            backgroundColor: "#dc3545", // Red background for error
+            stopOnFocus: true,
+        }).showToast();
+            }
+        });
+
+        // Set the username when the socket is connected
+        socket.on('connect', () => {
+            currentSocketId = socket.id; // Store the socket ID of the current user
+        });
+
+        // Create and append emoji picker when emoji button is clicked
+        let emojiList = null;
+        emojiButton.addEventListener('click', () => {
+            // Toggle emoji list visibility
+            if (!emojiList) {
+                emojiList = document.createElement('div');
+                emojiList.classList.add('emoji-list');
+                emojis.forEach(emoji => {
+                    const emojiItem = document.createElement('span');
+                    emojiItem.textContent = emoji;
+                    emojiItem.classList.add('emoji');
+                    emojiItem.addEventListener('click', () => {
+                        messageInput.value += emoji; // Insert emoji into input
+                        document.body.removeChild(emojiList); // Remove emoji picker after selection
+                        emojiList = null; // Reset emojiList to null
+                    });
+                    emojiList.appendChild(emojiItem);
+                });
+                document.body.appendChild(emojiList);
+            } else {
+                document.body.removeChild(emojiList); // Close emoji picker
+                emojiList = null; // Reset emojiList
+            }
+        });
+
+        // Close emoji picker when clicking outside
+        document.addEventListener('click', (event) => {
+            if (emojiList && !emojiList.contains(event.target) && event.target !== emojiButton) {
+                document.body.removeChild(emojiList);
+                emojiList = null;
+            }
+        });
+
+        // Listen for incoming messages
+        socket.on('receiveMessage', (data) => {
+            const messageElement = document.createElement('p');
+            messageElement.textContent = `${data.sender}: ${data.message}`;
+            messageElement.classList.add(data.socketId === currentSocketId ? 'sent' : 'received'); // Check socketId
+            messagesDiv.appendChild(messageElement);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight; // Auto-scroll to the latest message
+
+            Toastify({
+        text: `New message from ${data.sender}`,
+        duration: 3000,
+        gravity: "bottom",
+        position: "right",
+        backgroundColor: "#17a2b8", // Blue background for new message
+        stopOnFocus: true,
+    }).showToast();
+        });
+
+        // Send a message
+        messageForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const message = messageInput.value.trim();
+            if (message) {
+                socket.emit('sendMessage', { message }); // Send message data
+                messageInput.value = ''; // Clear the input field
+            }
+        });
+    </script>
+</body>
+
+</html>
